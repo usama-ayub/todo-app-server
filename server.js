@@ -146,9 +146,9 @@ router.route('/users/:user_id')
 
 
 router.route('/user/todo')
-.post((req, res) => {
+ .post((req, res) => {
         let body = req.body;
-        let {todoTask, isfavourite, CreateBy} = body;
+        let {todoTask, CreateBy, isfavourite} = body;
         let todo = new Todo(body);
         todo.save((err) => {
             if (err) {
@@ -182,7 +182,7 @@ router.route('/user/:user_id/todo/:todo_id')
             CreateBy: user_id,
             _id: todo_id
         };
-        Document.find(data, (err, todo) => {
+        Todo.find(data, (err, todo) => {
             if (err) {
                 return res.status(400).json({message: 'Todo Not Found'})
             }
@@ -192,6 +192,22 @@ router.route('/user/:user_id/todo/:todo_id')
         })
     });
 
+router.route('/user/todo/favourite')
+    .post((req, res) => {
+        let body = req.body;
+        let {user_id, todo_id, favourite} = body;
+       
+        Todo.findByIdAndUpdate({_id:body.todo_id},{isfavourite:body.favourite }, (err, result) => {
+            if (err) {
+                return res.status(400).json({message: 'Todo Not Found'})
+            }
+           else{
+               return res.status(200).json({message: 'Add in favourite'})
+           }
+        })
+    });
+
+
 router.route('/user/:user_id/todo/:todo_id')
     .delete((req, res) => {
         let params = req.params;
@@ -200,7 +216,7 @@ router.route('/user/:user_id/todo/:todo_id')
             CreateBy: user_id,
             _id: todo_id
         };
-        Document.findByIdAndRemove(data, (err, result) => {
+        Todo.findByIdAndRemove(data, (err, result) => {
             if (err) {
                 return res.status(400).send({message: 'Error'})
             }
@@ -209,6 +225,27 @@ router.route('/user/:user_id/todo/:todo_id')
             }
         })
     });
+
+router.route('/user/todo/update')
+    .put((req, res) => {
+        let body = req.body;
+        let {todo_id,todoTask} = body;
+      
+        Todo.findByIdAndUpdate({_id:body.todo_id},{todoTask:body.todoTask},(err, result) => {
+            if (err) {
+                return res.status(400).send({message: 'Error'})
+            }
+            else {
+                return res.status(200).send({message: 'Update Successfully'})
+            }
+        })
+    });
+
+
+
+
+
+
 
 
 
