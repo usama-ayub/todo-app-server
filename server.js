@@ -193,11 +193,11 @@ router.route('/user/:user_id/todo/:todo_id')
     });
 
 router.route('/user/todo/favourite')
-    .post((req, res) => {
+    .put((req, res) => {
         let body = req.body;
-        let {user_id, todo_id, favourite} = body;
+        let {user_id, todo_id, isfavourite} = body;
        
-        Todo.findByIdAndUpdate({_id:body.todo_id},{isfavourite:body.favourite }, (err, result) => {
+        Todo.findByIdAndUpdate({_id:body.todo_id},{isfavourite:body.isfavourite }, (err, result) => {
             if (err) {
                 return res.status(400).json({message: 'Todo Not Found'})
             }
